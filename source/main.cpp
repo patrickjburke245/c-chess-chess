@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+//#include <gtk/gtk.h>
 
 using namespace std;
 
@@ -32,19 +33,19 @@ class Game {
         void acceptUserInputSource() {
             cout << "Choose the square of the piece that you'd like to move ({Letter}{#}): ";
             cin >> sourceLetter >> sourceNumber;
-            cout << "You specified " << sourceLetter << sourceNumber << "\n";
+            cout << "You specified " << sourceLetter << sourceNumber << ".\n";
         }
 
         void unitConverterSource() {
             sourceIndex[1] = sourceLetter - 65;
             sourceIndex[0] = 8-sourceNumber;
-            cout << "Source index = " << sourceIndex[0] << ", " << sourceIndex[1] << "\n";
+            cout << "This translates to index = " << sourceIndex[0] << ", " << sourceIndex[1] << "\n";
         }
 
         void unitConverterDestination() {
             destinationIndex[1] = destinationLetter - 65;
             destinationIndex[0] = 8-destinationNumber;
-            cout << "Destination Index = " << destinationIndex[0] << ", " << destinationIndex[1] << "\n";
+            cout << "This translates to index = " << destinationIndex[0] << ", " << destinationIndex[1] << "\n";
         }
         
         void acceptUserInputDestination() {
@@ -56,13 +57,17 @@ class Game {
         }
 
         void moveKing() {
-            if (board[destinationIndex[0]][destinationIndex[1]].find('_'))
-            {
+            /* Only allow king to move 1 spot
+            pseudo code
+            if offset
+            
+            */
+            
+            if (board[destinationIndex[0]][destinationIndex[1]].find('_') != string::npos) {
                 string temp = board[sourceIndex[0]][sourceIndex[1]];
                 board[sourceIndex[0]][sourceIndex[1]] = board[destinationIndex[0]][destinationIndex[1]];
                 board[destinationIndex[0]][destinationIndex[1]] = temp;
-            }
-            else {
+            } else {
                 cout << "Illegal move - there is another piece in your way.\n";
             }
             
@@ -103,7 +108,8 @@ int main() {
         game1.acceptUserInputDestination();
         game1.unitConverterDestination();
 
-        game1.movePawn();
+        //game1.movePawn();
+        game1.moveKing();
 
         cout << "   A  B  C  D  E  F  G  H\n\n";
         for (int i = 0; i < board_dimension; i++) {
@@ -115,12 +121,28 @@ int main() {
         }
         if (turn_tracker == 1) {
             turn_tracker = 2;
-            cout << "Player 2! Your turn.\n";
+            cout << "\nPlayer 2! Your turn.\n";
         } else {
             turn_tracker = 1;
-            cout << "Player 1! Your turn.\n";
+            cout << "\nPlayer 1! Your turn.\n";
         }
     }
+
+    /*
+    add method to retire pieces
+    */
+
+    /*
+    1. if index value contains P, and it's player 2's turn, allow them to decrement 1-2 the first index.
+    2. if ", and it's player 1's turn, allow them to increment first index once or twice.
+    3. if index value contains R, allow them to change first index, or second index, but not both...
+    ... if in for loop the rook would overtake or jump another piece, disallow the move, and prompt...
+    ... user for new move
+    4. knight - allow user to jump over pieces! and move like so: https://sakkpalota.hu/index.php/en/chess/rules#knight
+    5. queen - allow anything rook, bishop can do without overtaking or
+    6. king - can move 1 spot left/right, 1 spot up/down, or superset of these
+    7. bishop - diagonal moves left/right offset must be equivalent to up/down offset.
+    */
 
     //Defining Game rules
     //Player 1 Pawns can move 1 down
